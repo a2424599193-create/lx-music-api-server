@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>部署指南 · LX API Server</title>
+<style>
+:root {
+  --bg: #faf9f5;
+  --panel: #ffffff;
+  --ink: #2b2a27;
+  --muted: #6f6c64;
+  --line: #e7e3d8;
+  --code-bg: #f3f1ea;
+  --brand: #c96442;
+  --warn-bg: #fbf1e3;
+  --warn-ink: #8a5a14;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #262624;
+    --panel: #30302e;
+    --ink: #ece9e1;
+    --muted: #a6a39a;
+    --line: #45443f;
+    --code-bg: #1f1e1d;
+    --brand: #e0825f;
+    --warn-bg: #3b3122;
+    --warn-ink: #e9c07a;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+main { max-width: 760px; margin: 0 auto; padding: 48px 16px 64px; }
+h1 { font-size: 30px; margin: 0 0 8px; }
+.lead { color: var(--muted); margin: 0 0 32px; }
+.step {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 14px;
+}
+.step h2 { font-size: 17px; margin: 0 0 6px; display: flex; gap: 10px; align-items: center; }
+.num {
+  width: 26px; height: 26px; border-radius: 50%; background: var(--brand); color: #fff;
+  display: inline-grid; place-items: center; font-size: 13px; flex: none;
+}
+.step p { margin: 6px 0; color: var(--muted); }
+pre {
+  background: var(--code-bg);
+  border-radius: 10px;
+  padding: 12px 14px;
+  overflow-x: auto;
+  margin: 10px 0 4px;
+  font: 13px/1.6 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 13px; }
+.notice { background: var(--warn-bg); color: var(--warn-ink); border-radius: 12px; padding: 14px 16px; margin: 24px 0; }
+a { color: var(--brand); }
+</style>
+</head>
+<body>
+<main>
+  <h1>部署到 Cloudflare Workers</h1>
+  <p class="lead">LX API Server 的 Workers 版：QQ 音乐、酷狗音乐、网易云音乐解析，自带管理后台。</p>
+
+  <section class="step">
+    <h2><span class="num">★</span>最简单：一键部署</h2>
+    <p>不需要安装任何东西。点击按钮，登录 Cloudflare 并连接 GitHub，填写管理后台密码 <code>ADMIN_PASSWORD</code>，点击部署即可。数据库会自动创建。</p>
+    <p><a href="https://deploy.workers.cloudflare.com/?url=https://github.com/nanci0406/lx-music-api-server-workers" target="_blank" rel="noopener"><img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare"></a></p>
+    <p>部署完成后打开 <code>https://….workers.dev/admin</code>，用户名 <code>admin</code>，然后从第 4 步继续。下面是用部署脚本的方式。</p>
+  </section>
+
+  <section class="step">
+    <h2><span class="num">1</span>准备环境</h2>
+    <p>安装 <a href="https://nodejs.org/" target="_blank" rel="noopener">Node.js 20 或更高版本</a>，注册一个 Cloudflare 账号(免费版即可)。</p>
+  </section>
+
+  <section class="step">
+    <h2><span class="num">2</span>运行部署脚本</h2>
+    <p>在项目目录里运行，脚本会安装依赖、登录 Cloudflare、创建 D1 数据库并部署：</p>
+    <pre>./deploy.sh          # Linux / macOS
+deploy.bat           # Windows</pre>
+    <p>最后会询问管理员密码，直接回车可以跳过，稍后在网页上创建。</p>
+  </section>
+
+  <section class="step">
+    <h2><span class="num">3</span>打开管理后台</h2>
+    <p>访问部署输出里的 <code>https://….workers.dev/admin</code>。如果刚才没有设置密码，页面会提示创建管理员账号。</p>
+  </section>
+
+  <section class="step">
+    <h2><span class="num">4</span>登录音乐账号、创建用户</h2>
+    <p>在“音乐账号”页扫码登录 QQ 音乐或网易云音乐(保存时勾选自动刷新登录)；在“用户”页新建用户，把音源脚本链接发给使用者。</p>
+  </section>
+
+  <section class="step">
+    <h2><span class="num">5</span>在 LX Music 中导入</h2>
+    <p>LX Music →「设置」→「自定义源」→「在线导入」，粘贴：</p>
+    <pre>https://你的地址/script?key=用户的Key</pre>
+  </section>
+
+  <div class="notice">
+    升级：拉取新代码后再运行一次部署脚本即可，数据库表结构会自动升级，旧版的配置会自动迁移。
+    手动部署和更多说明见 README。
+  </div>
+</main>
+</body>
+</html>
